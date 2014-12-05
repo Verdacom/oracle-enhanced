@@ -5,10 +5,9 @@
 
 Gem::Specification.new do |s|
   s.name = %q{activerecord-oracle_enhanced-adapter}
-  s.version = "1.4.3"
+  s.version = "1.4.3.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.license = 'MIT'
   s.authors = [%q{Raimonds Simanovskis}]
   s.date = %q{2013-10-24}
   s.description = %q{Oracle "enhanced" ActiveRecord adapter contains useful additional methods for working with new and legacy Oracle databases.
@@ -65,7 +64,7 @@ This adapter is superset of original ActiveRecord Oracle adapter.
     "spec/active_record/connection_adapters/oracle_enhanced_structure_dump_spec.rb",
     "spec/spec_helper.rb"
   ]
-  s.homepage = %q{http://github.com/rsim/oracle-enhanced}
+#  s.homepage = %q{../activerecord-oracle_enhanced-adapter-1.4.3/}
   s.require_paths = [%q{lib}]
   s.rubygems_version = %q{1.8.6}
   s.summary = %q{Oracle enhanced adapter for ActiveRecord}

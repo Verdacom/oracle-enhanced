@@ -382,14 +382,14 @@ module ActiveRecord
       # see: abstract/quoting.rb
 
       def quote_column_name(name) #:nodoc:
-        name = name.to_s
+        name = name.to_s.upcase
         @quoted_column_names[name] ||= begin
           # if only valid lowercase column characters in name
           if name =~ /\A[a-z][a-z_0-9\$#]*\Z/
             "\"#{name.upcase}\""
           else
             # remove double quotes which cannot be used inside quoted identifier
-            "\"#{name.gsub('"', '')}\""
+            "\"#{name.gsub('"', '')}\"".upcase
           end
         end
       end
@@ -403,11 +403,11 @@ module ActiveRecord
         when /^[a-z][a-z_0-9\$#]*$/
           "\"#{name.upcase}\""
         when /^[a-z][a-z_0-9\$#\-]*$/i
-          "\"#{name}\""
+          "\"#{name.upcase}\""
         # if other characters present then assume that it is expression
         # which should not be quoted
         else
-          name
+          name.upcase
         end
       end
 
@@ -434,13 +434,13 @@ module ActiveRecord
       # can be prefixed with schema name
       # CamelCase table names should be quoted
       def self.valid_table_name?(name) #:nodoc:
-        name = name.to_s
+        name = name.upcase!.to_s
         name =~ VALID_TABLE_NAME && !(name =~ /[A-Z]/ && name =~ /[a-z]/) ? true : false
       end
 
       def quote_table_name(name) #:nodoc:
-        name = name.to_s
-        @quoted_table_names[name] ||= name.split('.').map{|n| n.split('@').map{|m| quote_column_name(m)}.join('@')}.join('.')
+        name = name.upcase.to_s
+        @quoted_table_names[name] ||= name.upcase.split('.').map{|n| n.split('@').map{|m| quote_column_name(m)}.join('@')}.join('.')
       end
 
       def quote_string(s) #:nodoc:
@@ -588,7 +588,7 @@ module ActiveRecord
 
       # Executes a SQL statement
       def execute(sql, name = nil)
-        log(sql, name) { @connection.exec(sql) }
+        log(sql, name) { @connection.exec(sql)}
       end
 
       def substitute_at(column, index)
@@ -603,6 +603,7 @@ module ActiveRecord
         log(sql, name, binds) do
           cursor = nil
           cached = false
+          sql=sql.gsub(/."[a-z_]+"/){|str| str.upcase} 
           if binds.empty?
             cursor = @connection.prepare(sql)
           else
@@ -665,6 +666,7 @@ module ActiveRecord
       def select_rows(sql, name = nil)
         # last parameter indicates to return also column list
         result = columns = nil
+        
         log(sql, name) do
           result, columns = @connection.select(sql, name, true)
         end
@@ -1204,6 +1206,7 @@ module ActiveRecord
       #
       #   distinct("posts.id", "posts.created_at desc")
       def distinct(columns, order_by) #:nodoc:
+        columns=columns.upcase  
         return "DISTINCT #{columns}" if order_by.blank?
 
         # construct a valid DISTINCT clause, ie. one that includes the ORDER BY columns, using

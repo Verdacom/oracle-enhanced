@@ -600,6 +600,8 @@ module ActiveRecord
       end
 
       def exec_query(sql, name = 'SQL', binds = [])
+        sql = sql.gsub(/\"[a-z_]+\"\.\"[a-z_]+\"/, &:upcase)
+
         log(sql, name, binds) do
           cursor = nil
           cached = false

@@ -434,7 +434,7 @@ module ActiveRecord
       # can be prefixed with schema name
       # CamelCase table names should be quoted
       def self.valid_table_name?(name) #:nodoc:
-        name = name.upcase!.to_s
+        name = name.upcase.to_s
         name =~ VALID_TABLE_NAME && !(name =~ /[A-Z]/ && name =~ /[a-z]/) ? true : false
       end
 
@@ -603,7 +603,7 @@ module ActiveRecord
         log(sql, name, binds) do
           cursor = nil
           cached = false
-          sql=sql.gsub(/."[a-z_]+"/){|str| str.upcase} 
+          sql=sql.gsub(/."[a-z_]+"/){|str| str.upcase}
           if binds.empty?
             cursor = @connection.prepare(sql)
           else
@@ -666,7 +666,7 @@ module ActiveRecord
       def select_rows(sql, name = nil)
         # last parameter indicates to return also column list
         result = columns = nil
-        
+
         log(sql, name) do
           result, columns = @connection.select(sql, name, true)
         end
@@ -1206,7 +1206,7 @@ module ActiveRecord
       #
       #   distinct("posts.id", "posts.created_at desc")
       def distinct(columns, order_by) #:nodoc:
-        columns=columns.upcase  
+        columns=columns.upcase
         return "DISTINCT #{columns}" if order_by.blank?
 
         # construct a valid DISTINCT clause, ie. one that includes the ORDER BY columns, using

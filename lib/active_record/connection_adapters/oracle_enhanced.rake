@@ -68,12 +68,12 @@ namespace :db do
       rails_env = defined?(Rails.env) ? Rails.env : RAILS_ENV
       if abcs[rails_env]['adapter'] == 'oracle_enhanced'
         ActiveRecord::Base.establish_connection(abcs[rails_env])
-        File.open("db/#{rails_env}_structure.sql", "w+") { |f| f << ActiveRecord::Base.connection.structure_dump }
+        File.open("db/structure.sql", "w+") { |f| f << ActiveRecord::Base.connection.structure_dump }
         if ActiveRecord::Base.connection.supports_migrations?
-          File.open("db/#{rails_env}_structure.sql", "a") { |f| f << ActiveRecord::Base.connection.dump_schema_information }
+          File.open("db/structure.sql", "a") { |f| f << ActiveRecord::Base.connection.dump_schema_information }
         end
         if abcs[rails_env]['structure_dump'] == "db_stored_code"
-           File.open("db/#{rails_env}_structure.sql", "a") { |f| f << ActiveRecord::Base.connection.structure_dump_db_stored_code }
+           File.open("db/structure.sql", "a") { |f| f << ActiveRecord::Base.connection.structure_dump_db_stored_code }
         end
       else
         Array(existing_actions).each{|action| action.call}
@@ -87,7 +87,7 @@ namespace :db do
       rails_env = defined?(Rails.env) ? Rails.env : RAILS_ENV
       if abcs[rails_env]['adapter'] == 'oracle_enhanced' && abcs['test']['adapter'] == 'oracle_enhanced'
         ActiveRecord::Base.establish_connection(:test)
-        ActiveRecord::Base.connection.execute_structure_dump(File.read("db/#{rails_env}_structure.sql"))
+        ActiveRecord::Base.connection.execute_structure_dump(File.read("db/structure.sql"))
       else
         Array(existing_actions).each{|action| action.call}
       end
